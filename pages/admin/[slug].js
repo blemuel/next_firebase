@@ -32,7 +32,6 @@ function PostManager() {
     .collection("posts")
     .doc(slug);
   const [post] = useDocumentDataOnce(postRef);
-  console.log("POS", post);
 
   return (
     <main className={styles.container}>
@@ -66,7 +65,14 @@ function PostManager() {
 }
 
 function PostForm({ defaultValues, postRef, preview }) {
-  const { register, errors, handleSubmit, formState, reset, watch } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm({
     defaultValues,
     mode: "onChange",
   });
@@ -98,7 +104,7 @@ function PostForm({ defaultValues, postRef, preview }) {
 
         <textarea
           name="content"
-          ref={register({
+          {...register("content", {
             maxLength: { value: 20000, message: "content is too long" },
             minLength: { value: 10, message: "content is too short" },
             required: { value: true, message: "content is required" },
@@ -112,9 +118,8 @@ function PostForm({ defaultValues, postRef, preview }) {
         <fieldset>
           <input
             className={styles.checkbox}
-            name="published"
             type="checkbox"
-            ref={register}
+            {...register("published")}
           />
           <label>Published</label>
         </fieldset>
